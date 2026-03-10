@@ -1,0 +1,334 @@
+name: Deploy
+
+# Auto-deploy when CI passes on master, or trigger manually for testing.
+on:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+    branches: [master]
+
+  workflow_dispatch:
+    inputs:
+      deploy_target:
+        description: "Deploy target"
+        required: true
+        default: both
+        type: choice
+        options:
+          - backend
+          - frontend
+          - both
+      dry_run:
+        description: "Dry-run (validate only, không deploy thật)"
+        required: false
+        default: "true"
+        type: boolean
+      ref_sha:
+        description: "Git SHA để deploy (để trống = HEAD của branch hiện tại)"
+        required: false
+        default: ""
+        type: string
+
+# ── Required GitHub Secrets ────────────────────────────────────────────────────
+#   LIGHTSAIL_HOST        — Public IPv4 của AWS Lightsail instance
+#   LIGHTSAIL_SSH_KEY     — Nội dung private key SSH (ed25519), không có passphrase
+#   CLOUDFLARE_API_TOKEN  — CF token với quyền "Edit Cloudflare Pages"
+#   CLOUDFLARE_ACCOUNT_ID — Cloudflare Account ID
+#   POSTGRES_PASSWORD     — Production Postgres password (openssl rand -base64 24)
+#   JWT_SECRET            — JWT signing secret (openssl rand -base64 32)
+#   ANTHROPIC_API_KEY     — (tuỳ chọn) Claude API key
+#
+# ── Required GitHub Variables ──────────────────────────────────────────────────
+#   API_DOMAIN            — Domain của backend, ví dụ: api.yourdomain.com hoặc <IP>.sslip.io
+#   CORS_ALLOWED_ORIGINS  — Origins được phép, ví dụ: https://yourdomain.pages.dev
+#   NEXT_PUBLIC_API_URL   — URL đầy đủ tới backend, ví dụ: https://api.yourdomain.com
+#   CF_PAGES_PROJECT_NAME — Tên project trên Cloudflare Pages, ví dụ: ai-ke-toan
+
+jobs:
+
+  # ── Detect which parts of the codebase changed (workflow_run only) ───────────
+  check-changes:
+    name: Check Deploy-Relevant Changes
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 2
+
+      - name: Detect changed files
+        id: filter
+        run: |
+          CHANGED=$(git diff --name-only HEAD~1 HEAD)
+          echo "Changed files:"
+          echo "$CHANGED"
+
+          BE=$(echo "$CHANGED" | grep -qE \
+            '^(backend/|docker-compose\.prod\.yml|\.github/workflows/(deploy|ci)\.yml)' \
+            && echo true || echo false)
+          FE=$(echo "$CHANGED" | grep -qE \
+            '^(app/|\.github/workflows/deploy\.yml)' \
+            && echo true || echo false)
+
+          echo "backend=$BE"  >> $GITHUB_OUTPUT
+          echo "frontend=$FE" >> $GITHUB_OUTPUT
+          echo "backend-changed=$BE, frontend-changed=$FE"
+
+  # ── Deploy Go backend lên AWS Lightsail ──────────────────────────────────────
+  deploy-backend:
+    name: Deploy Backend (Lightsail SSH)
+    runs-on: ubuntu-latest
+    needs: [check-changes]
+    if: >-
+      always() && (
+        (github.event_name == 'workflow_dispatch' && inputs.deploy_target != 'frontend') ||
+        (needs.check-changes.result == 'success' && needs.check-changes.outputs.backend == 'true')
+      )
+
+    permissions:
+      packages: read
+      contents: read
+
+    steps:
+      - name: Setup SSH key
+        env:
+          SSH_KEY: ${{ secrets.LIGHTSAIL_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+      # Idempotent setup: install Docker, clone repo, write .env from secrets
+      - name: Bootstrap server (Docker + repo + .env)
+        env:
+          REMOTE_HOST: ${{ secrets.LIGHTSAIL_HOST }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_REPO: ${{ github.repository }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          MISA_APP_ID: ${{ secrets.MISA_APP_ID }}
+          CORS_ALLOWED_ORIGINS: ${{ vars.CORS_ALLOWED_ORIGINS }}
+          API_DOMAIN: ${{ vars.API_DOMAIN }}
+        run: |
+          # Validate required secrets before SSH
+          : "${POSTGRES_PASSWORD:?POSTGRES_PASSWORD secret is not set}"
+          : "${JWT_SECRET:?JWT_SECRET secret is not set}"
+          : "${API_DOMAIN:?API_DOMAIN variable is not set}"
+
+          GHCR_REPO_LC=$(echo "$GHCR_REPO" | tr '[:upper:]' '[:lower:]')
+
+          ssh -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=no \
+            -o BatchMode=yes \
+            -o ConnectTimeout=15 \
+            "ubuntu@${REMOTE_HOST}" << ENDSSH
+          set -e
+
+          # --- Docker ---
+          if sudo docker version &>/dev/null; then
+            echo "Docker already installed"
+          else
+            echo "Installing Docker..."
+            sudo apt-get update -y
+            sudo apt-get install -y ca-certificates curl git
+            curl -fsSL https://get.docker.com | sudo sh
+            sudo systemctl enable docker && sudo systemctl start docker
+            sudo usermod -aG docker ubuntu
+          fi
+
+          # --- App directory ---
+          APP_DIR=/opt/ai-accounting
+          if [ ! -d "\$APP_DIR/.git" ]; then
+            sudo mkdir -p "\$APP_DIR"
+            sudo chown ubuntu:ubuntu "\$APP_DIR"
+            git clone --depth 1 https://x-access-token:${GHCR_TOKEN}@github.com/${GHCR_REPO}.git "\$APP_DIR"
+          fi
+
+          # --- .env (always overwrite to apply secret rotations) ---
+          {
+            printf 'POSTGRES_DB=ai_ke_toan\n'
+            printf 'POSTGRES_USER=postgres\n'
+            printf 'POSTGRES_PASSWORD=%s\n' "${POSTGRES_PASSWORD}"
+            printf 'PORT=8080\n'
+            printf 'DATABASE_URL=postgres://postgres:%s@postgres:5432/ai_ke_toan?sslmode=disable\n' "${POSTGRES_PASSWORD}"
+            printf 'JWT_SECRET=%s\n' "${JWT_SECRET}"
+            printf 'CORS_ORIGINS=%s\n' "${CORS_ALLOWED_ORIGINS}"
+            printf 'OCR_PROVIDER=mock\n'
+            printf 'ANTHROPIC_API_KEY=%s\n' "${ANTHROPIC_API_KEY}"
+            printf 'MISA_APP_ID=%s\n' "${MISA_APP_ID}"
+            printf 'GHCR_REPO=%s\n' "${GHCR_REPO_LC}"
+            printf 'IMAGE_TAG=latest\n'
+          } > "\$APP_DIR/.env"
+          chmod 600 "\$APP_DIR/.env"
+          echo ".env written (\$(wc -l < \$APP_DIR/.env) lines)"
+
+          # --- Rotate Postgres password if container is already running ---
+          if sudo docker ps --format '{{.Names}}' 2>/dev/null | grep -q ai-accounting-postgres; then
+            sudo docker exec ai-accounting-postgres psql -U postgres \
+              -c "ALTER USER postgres PASSWORD '${POSTGRES_PASSWORD}'" 2>/dev/null \
+              && echo "Postgres password rotated" \
+              || echo "Postgres not yet running (will start fresh)"
+          fi
+          ENDSSH
+
+      # Dry-run: just validate SSH + server environment
+      - name: Dry-run — Validate SSH + server
+        if: inputs.dry_run == true
+        env:
+          REMOTE_HOST: ${{ secrets.LIGHTSAIL_HOST }}
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=no -o BatchMode=yes -o ConnectTimeout=15 \
+            "ubuntu@${REMOTE_HOST}" \
+            "bash -l -c 'set -e; echo SSH OK; sudo docker --version; sudo docker compose version; df -h /'"
+
+      # Real deploy
+      - name: Deploy via SSH
+        if: inputs.dry_run != true
+        env:
+          REMOTE_HOST: ${{ secrets.LIGHTSAIL_HOST }}
+          GHCR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GHCR_ACTOR: ${{ github.actor }}
+          GHCR_REPO: ${{ github.repository }}
+          DEPLOY_SHA: ${{ inputs.ref_sha || github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          # Validate SHA to prevent injection via user-supplied input
+          if ! [[ "${DEPLOY_SHA}" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Invalid DEPLOY_SHA '${DEPLOY_SHA}'. Must be 40-char lowercase hex git SHA."
+            exit 1
+          fi
+
+          GHCR_REPO_LC=$(echo "$GHCR_REPO" | tr '[:upper:]' '[:lower:]')
+
+          ssh -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=no -o BatchMode=yes \
+            "ubuntu@${REMOTE_HOST}" << EOF
+          set -euo pipefail
+          cd /opt/ai-accounting
+
+          echo "=== [1/5] Login to GHCR ==="
+          echo "${GHCR_TOKEN}" | sudo docker login ghcr.io -u "${GHCR_ACTOR}" --password-stdin
+
+          echo "=== [2/5] Pull latest code ==="
+          git remote set-url origin https://x-access-token:${GHCR_TOKEN}@github.com/${GHCR_REPO}.git
+          git fetch origin master
+          git reset --hard origin/master
+          git remote set-url origin https://github.com/${GHCR_REPO}.git
+
+          echo "=== [3/5] Pull new images ==="
+          GHCR_REPO="${GHCR_REPO_LC}" IMAGE_TAG="${DEPLOY_SHA}" \
+            sudo docker compose --env-file .env -f docker-compose.prod.yml pull backend
+
+          sudo docker logout ghcr.io
+
+          echo "=== [4/5] Restart services ==="
+          GHCR_REPO="${GHCR_REPO_LC}" IMAGE_TAG="${DEPLOY_SHA}" \
+            sudo docker compose --env-file .env -f docker-compose.prod.yml up -d \
+            --remove-orphans postgres backend
+
+          echo "=== [5/5] Health check ==="
+          sleep 15
+          curl -fsS http://localhost:8080/api/health | grep -q '"status"'
+          echo "Backend deploy OK — SHA: ${DEPLOY_SHA}"
+          EOF
+
+      - name: Fetch remote logs on failure
+        if: failure() && inputs.dry_run != true
+        env:
+          REMOTE_HOST: ${{ secrets.LIGHTSAIL_HOST }}
+        run: |
+          ssh -i ~/.ssh/deploy_key \
+            -o StrictHostKeyChecking=no -o BatchMode=yes \
+            "ubuntu@${REMOTE_HOST}" \
+            "sudo docker compose -f /opt/ai-accounting/docker-compose.prod.yml logs --tail=60 backend 2>&1 || true" \
+            || echo "(Cannot SSH into server)"
+
+  # ── Deploy Next.js frontend lên Cloudflare Pages ─────────────────────────────
+  deploy-frontend:
+    name: Deploy Frontend (Cloudflare Pages)
+    runs-on: ubuntu-latest
+    needs: [check-changes]
+    if: >-
+      always() && (
+        (github.event_name == 'workflow_dispatch' && inputs.deploy_target != 'backend') ||
+        (needs.check-changes.result == 'success' && needs.check-changes.outputs.frontend == 'true')
+      )
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref_sha || github.event.workflow_run.head_sha || github.sha }}
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: app
+
+      - name: Build static export
+        run: npm run build
+        working-directory: app
+        env:
+          # Use static export mode for Cloudflare Pages
+          NEXT_OUTPUT: export
+          NEXT_PUBLIC_API_URL: ${{ vars.NEXT_PUBLIC_API_URL }}
+
+      # Real deploy to Cloudflare Pages
+      - name: Deploy to Cloudflare Pages
+        if: inputs.dry_run != true
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: ${{ vars.CF_PAGES_PROJECT_NAME }}
+          directory: app/out
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+          # Deploy to production URL when pushing to master
+          branch: master
+
+      - name: Dry-run — Build OK, skipping Cloudflare deploy
+        if: inputs.dry_run == true
+        run: |
+          echo "Dry-run mode — static export succeeded, skipping Cloudflare Pages deploy"
+          echo "Out dir size: $(du -sh app/out)"
+          echo "Files: $(find app/out -type f | wc -l)"
+
+      - name: Report failure context
+        if: failure()
+        run: |
+          echo "Frontend deploy FAILED"
+          echo "SHA: ${{ inputs.ref_sha || github.event.workflow_run.head_sha || github.sha }}"
+          echo "Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+  # ── Summary ──────────────────────────────────────────────────────────────────
+  deploy-summary:
+    name: Deploy Summary
+    runs-on: ubuntu-latest
+    needs: [deploy-backend, deploy-frontend]
+    if: always()
+
+    steps:
+      - name: Report status
+        run: |
+          echo "Backend  : ${{ needs.deploy-backend.result }}"
+          echo "Frontend : ${{ needs.deploy-frontend.result }}"
+          echo "Trigger  : ${{ github.event_name }}"
+          echo "Run      : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          if [[ "${{ needs.deploy-backend.result }}"  == "failure" ||
+                "${{ needs.deploy-frontend.result }}" == "failure" ]]; then
+            echo "Một hoặc nhiều deploy thất bại"
+            exit 1
+          fi
+          echo "Tất cả deploy thành công (hoặc bị skip)"
