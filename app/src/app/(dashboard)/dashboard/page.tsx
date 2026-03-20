@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { FileText, CheckCircle, Clock, AlertCircle, CircleDot } from "lucide-react";
-import { listDocuments, getEntryStats, getDocumentStats, type Document, type DayCount, type EntryStats } from "@/lib/api";
+import { listDocuments, getEntryStats, getDocumentStats, listHubDocuments, type Document, type DayCount, type EntryStats, type HubDocument } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Sparkline } from "@/components/sparkline";
 
