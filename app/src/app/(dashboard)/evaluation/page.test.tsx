@@ -43,10 +43,10 @@ describe("EvaluationPage", () => {
       // Total documents card
       expect(screen.getByText("42")).toBeInTheDocument();
     });
-    // Metric percentages
-    expect(screen.getByText("85%")).toBeInTheDocument();
-    expect(screen.getByText("78%")).toBeInTheDocument();
-    expect(screen.getByText("92%")).toBeInTheDocument();
+    // Metric percentages appear in both cards and table — just verify at least one exists
+    expect(screen.getAllByText("85%").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("78%").length).toBeGreaterThan(0);
+    expect(screen.getAllByText("92%").length).toBeGreaterThan(0);
   });
 
   it("shows all metric card labels", async () => {
