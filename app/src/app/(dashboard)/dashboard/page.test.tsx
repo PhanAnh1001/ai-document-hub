@@ -12,9 +12,10 @@ vi.mock("@/lib/api", () => ({
   listDocuments: vi.fn(),
   getEntryStats: vi.fn(),
   getDocumentStats: vi.fn(),
+  listHubDocuments: vi.fn(),
 }));
 
-import { listDocuments, getEntryStats, getDocumentStats } from "@/lib/api";
+import { listDocuments, getEntryStats, getDocumentStats, listHubDocuments } from "@/lib/api";
 
 const emptyDocs = { documents: [], total: 0 };
 const emptyStats = { total: 0, by_status: {}, total_approved_amount: 0 };
