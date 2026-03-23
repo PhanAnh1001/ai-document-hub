@@ -2,6 +2,9 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import ChatPage from "./page";
 
+// jsdom doesn't implement scrollIntoView
+window.HTMLElement.prototype.scrollIntoView = vi.fn();
+
 vi.mock("@/lib/api", () => ({
   queryRAG: vi.fn(),
   listHubDocuments: vi.fn(),
