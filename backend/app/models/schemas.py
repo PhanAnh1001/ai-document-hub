@@ -13,6 +13,8 @@ class DocumentUploadResponse(BaseModel):
 
 
 class DocumentResponse(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: str
     filename: str
     original_filename: str
@@ -26,9 +28,6 @@ class DocumentResponse(BaseModel):
     error_message: Optional[str] = None
     created_at: datetime
     updated_at: Optional[datetime] = None
-
-    class Config:
-        from_attributes = True
 
 
 class DocumentListResponse(BaseModel):
@@ -89,13 +88,12 @@ class QueryResponse(BaseModel):
 
 
 class ChatHistoryItem(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: str
     question: str
     answer: Optional[str] = None
     created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 # ── Evaluation schemas ────────────────────────────────────────────────────────
@@ -132,13 +130,12 @@ class UserCreate(BaseModel):
 
 
 class UserResponse(BaseModel):
+    model_config = {"from_attributes": True}
+
     id: str
     email: str
     full_name: Optional[str] = None
     created_at: datetime
-
-    class Config:
-        from_attributes = True
 
 
 class Token(BaseModel):
