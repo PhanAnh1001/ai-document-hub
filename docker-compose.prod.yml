@@ -4,18 +4,18 @@
 # Usage on server:
 #   docker compose --env-file .env -f docker-compose.prod.yml up -d
 #
-# Required .env vars: POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD,
-#   DATABASE_URL, JWT_SECRET, CORS_ORIGINS, PORT, GHCR_REPO, IMAGE_TAG
+# Required .env vars: POSTGRES_USER, POSTGRES_PASSWORD, GROQ_API_KEY,
+#   SECRET_KEY, GHCR_REPO, IMAGE_TAG
 
 version: "3.8"
 
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: ai-accounting-postgres
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: ai-document-hub-db
     environment:
-      POSTGRES_DB:       ${POSTGRES_DB}
-      POSTGRES_USER:     ${POSTGRES_USER}
+      POSTGRES_DB: ai_document_hub
+      POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -25,35 +25,52 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-    # Do NOT expose port 5432 to the host in production
+    networks:
+      - internal
+
+  redis:
+    image: redis:7-alpine
+    container_name: ai-document-hub-redis
+    restart: unless-stopped
     networks:
       - internal
 
   backend:
     image: ghcr.io/${GHCR_REPO}/backend:${IMAGE_TAG:-latest}
-    container_name: ai-accounting-backend
+    container_name: ai-document-hub-backend
     ports:
-      - "8080:8080"
+      - "8000:8000"
     environment:
-      DATABASE_URL:      ${DATABASE_URL}
-      JWT_SECRET:        ${JWT_SECRET}
-      CORS_ORIGINS:      ${CORS_ORIGINS}
-      PORT:              ${PORT:-8080}
-      OCR_PROVIDER:      ${OCR_PROVIDER:-mock}
-      OCR_API_KEY:       ${OCR_API_KEY:-}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      MISA_API_URL:      ${MISA_API_URL:-}
-      MISA_API_KEY:      ${MISA_API_KEY:-}
-      MISA_APP_ID:       ${MISA_APP_ID:-}
-      UPLOAD_DIR:        /data/uploads
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/ai_document_hub
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      GOOGLE_VISION_API_KEY: ${GOOGLE_VISION_API_KEY:-}
+      SECRET_KEY: ${SECRET_KEY}
+      UPLOAD_DIR: /app/uploads
+      REDIS_URL: redis://redis:6379
+      PADDLE_OCR_ENABLED: "false"
     volumes:
-      - uploads:/data/uploads
+      - uploads:/app/uploads
     depends_on:
-      postgres:
+      db:
         condition: service_healthy
+      redis:
+        condition: service_started
     restart: unless-stopped
     networks:
       - internal
+      - public
+
+  frontend:
+    image: ghcr.io/${GHCR_REPO}/frontend:${IMAGE_TAG:-latest}
+    container_name: ai-document-hub-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:8000}
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
       - public
 
 volumes:
