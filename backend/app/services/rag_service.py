@@ -113,39 +113,86 @@ class RAGService:
         await db_session.flush()
         return chunk_records
 
+    async def _query_pgvector(
+        self, question_vec: list[float], doc_ids: list[str] | None, db_session, top_k: int
+    ) -> list | None:
+        """
+        Attempt pgvector native cosine-distance search.
+        Returns list of DocumentChunk objects or None if pgvector not available/usable.
+        """
+        try:
+            from app.models.db_models import DocumentChunk, PGVECTOR_AVAILABLE
+            if not PGVECTOR_AVAILABLE:
+                return None
+
+            import numpy as np
+            from sqlalchemy import select
+
+            query_array = np.array(question_vec, dtype=np.float32)
+            stmt = (
+                select(DocumentChunk)
+                .where(DocumentChunk.embedding.isnot(None))  # type: ignore[attr-defined]
+                .order_by(DocumentChunk.embedding.cosine_distance(query_array))  # type: ignore[attr-defined]
+                .limit(top_k)
+            )
+            if doc_ids:
+                stmt = stmt.where(DocumentChunk.document_id.in_(doc_ids))
+
+            result = await db_session.execute(stmt)
+            chunks = result.scalars().all()
+            # Return only if we actually got results (pgvector column may be empty)
+            if chunks:
+                return list(chunks)
+            return None
+        except Exception as e:
+            logger.debug(f"pgvector search failed, falling back to JSON cosine: {e}")
+            return None
+
     async def query(
         self, question: str, doc_ids: list[str] | None, db_session, top_k: int = 3
     ) -> dict[str, Any]:
         """
         Embed question, find top-k relevant chunks, generate answer with LLM.
+        Prefers pgvector native ANN search; falls back to JSON cosine similarity.
         Returns dict with answer, sources, question.
         """
         from sqlalchemy import select
         from app.models.db_models import DocumentChunk
 
-        # Retrieve candidate chunks
-        stmt = select(DocumentChunk)
-        if doc_ids:
-            stmt = stmt.where(DocumentChunk.document_id.in_(doc_ids))
-        result = await db_session.execute(stmt)
-        all_chunks = result.scalars().all()
+        question_vec = self._embed_text(question)
 
-        if not all_chunks:
+        # Try pgvector native search first
+        top_chunks_objects = await self._query_pgvector(question_vec, doc_ids, db_session, top_k)
+
+        if top_chunks_objects is not None:
+            # pgvector returned results — wrap with dummy similarity score
+            top_chunks: list[tuple[float, Any]] = [(1.0, c) for c in top_chunks_objects]
+        else:
+            # Fallback: load all chunks, rank by JSON cosine similarity
+            stmt = select(DocumentChunk)
+            if doc_ids:
+                stmt = stmt.where(DocumentChunk.document_id.in_(doc_ids))
+            result = await db_session.execute(stmt)
+            all_chunks = result.scalars().all()
+
+            if not all_chunks:
+                answer = "Tôi không tìm thấy thông tin này trong tài liệu."
+                return {"answer": answer, "sources": [], "question": question}
+
+            ranked: list[tuple[float, Any]] = []
+            for chunk in all_chunks:
+                if chunk.embedding_json:
+                    sim = self._cosine_similarity(question_vec, chunk.embedding_json)
+                else:
+                    sim = 0.0
+                ranked.append((sim, chunk))
+
+            ranked.sort(key=lambda x: x[0], reverse=True)
+            top_chunks = ranked[:top_k]
+
+        if not top_chunks:
             answer = "Tôi không tìm thấy thông tin này trong tài liệu."
             return {"answer": answer, "sources": [], "question": question}
-
-        # Rank by cosine similarity
-        question_vec = self._embed_text(question)
-        ranked = []
-        for chunk in all_chunks:
-            if chunk.embedding_json:
-                sim = self._cosine_similarity(question_vec, chunk.embedding_json)
-            else:
-                sim = 0.0
-            ranked.append((sim, chunk))
-
-        ranked.sort(key=lambda x: x[0], reverse=True)
-        top_chunks = ranked[:top_k]
 
         # Build context
         context_parts = [chunk.chunk_text for _, chunk in top_chunks]
