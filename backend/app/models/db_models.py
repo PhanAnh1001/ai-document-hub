@@ -79,9 +79,14 @@ class DocumentChunk(Base):
     document_id = Column(String(36), ForeignKey("documents.id"), nullable=False)
     chunk_index = Column(Float, nullable=False)
     chunk_text = Column(Text, nullable=False)
-    # Embedding stored as JSON array (fallback when pgvector not available)
+    # Embedding stored as JSON array (always works: SQLite + PostgreSQL)
     embedding_json = Column(JSON)
     created_at = Column(DateTime, default=datetime.utcnow)
+
+
+# Dynamically add pgvector column so SQLite tests are unaffected
+if PGVECTOR_AVAILABLE:
+    DocumentChunk.embedding = Column(Vector(1024), nullable=True)  # type: ignore[attr-defined]
 
 
 class ChatHistory(Base):
