@@ -58,8 +58,12 @@ CREATE TABLE IF NOT EXISTS document_chunks (
     chunk_index     FLOAT NOT NULL,
     chunk_text      TEXT NOT NULL,
     embedding_json  JSONB,  -- fallback when pgvector not available
+    embedding       vector(1024),  -- pgvector native column (PostgreSQL only)
     created_at      TIMESTAMP WITHOUT TIME ZONE DEFAULT NOW()
 );
+
+-- Create ivfflat index for fast ANN search (uncomment after loading substantial data)
+-- CREATE INDEX ON document_chunks USING ivfflat (embedding vector_cosine_ops) WITH (lists = 100);
 
 CREATE INDEX IF NOT EXISTS idx_chunks_document_id ON document_chunks(document_id);
 
