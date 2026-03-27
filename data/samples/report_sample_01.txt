@@ -1,0 +1,58 @@
+BÁO CÁO TÀI CHÍNH TÓM TẮT
+Công ty Cổ phần Đầu tư và Phát triển Công nghệ Đông Nam Á
+Kỳ báo cáo: Quý III/2024 (01/07/2024 — 30/09/2024)
+Ngày lập báo cáo: 15/10/2024
+
+I. KẾT QUẢ KINH DOANH
+
+1. DOANH THU
+Doanh thu thuần từ dịch vụ phần mềm:         3.850.000.000 đồng
+Doanh thu từ triển khai và tư vấn:              920.000.000 đồng
+Doanh thu từ dịch vụ hỗ trợ và bảo trì:       430.000.000 đồng
+Tổng doanh thu:                               5.200.000.000 đồng
+So với Quý II/2024:                            +18,2% (tăng trưởng)
+So với Quý III/2023:                           +34,7% (tăng trưởng)
+
+2. CHI PHÍ HOẠT ĐỘNG
+Chi phí nhân sự (85 nhân viên):              2.100.000.000 đồng
+Chi phí thuê văn phòng và cơ sở hạ tầng:      380.000.000 đồng
+Chi phí marketing và bán hàng:                 210.000.000 đồng
+Chi phí điện toán đám mây (AWS, GCP):          145.000.000 đồng
+Chi phí hành chính và vận hành khác:            95.000.000 đồng
+Tổng chi phí:                                2.930.000.000 đồng
+
+3. LỢI NHUẬN
+Lợi nhuận gộp:                               2.270.000.000 đồng
+Biên lợi nhuận gộp:                                   43,7%
+Lợi nhuận trước thuế:                        1.270.000.000 đồng
+Thuế thu nhập doanh nghiệp (20%):              254.000.000 đồng
+Lợi nhuận sau thuế:                          1.016.000.000 đồng
+Biên lợi nhuận ròng:                                   19,5%
+
+II. TÌNH HÌNH KHÁCH HÀNG
+
+Tổng số khách hàng hiện tại: 127 doanh nghiệp
+- Khách hàng Enterprise (>500 nhân viên): 12 công ty
+- Khách hàng SME (50-499 nhân viên): 58 công ty
+- Khách hàng nhỏ (<50 nhân viên): 57 công ty
+
+Khách hàng mới trong quý: 23 doanh nghiệp
+Tỷ lệ gia hạn hợp đồng: 91,3%
+NPS (Net Promoter Score): 72 điểm
+
+III. TÌNH HÌNH NHÂN SỰ
+
+Tổng nhân sự: 85 người (tăng 8 người so với quý trước)
+- Kỹ thuật/Kỹ sư phần mềm: 52 người (61,2%)
+- Kinh doanh và Marketing: 15 người (17,6%)
+- Hỗ trợ khách hàng: 10 người (11,8%)
+- Quản lý và Hành chính: 8 người (9,4%)
+
+Chi phí nhân sự bình quân/người/tháng: 8.235.000 đồng
+
+IV. KẾ HOẠCH QUÝ IV/2024
+
+Mục tiêu doanh thu: 6.500.000.000 đồng (+25% so với Q3)
+Kế hoạch tuyển dụng: thêm 12 kỹ sư AI/ML
+Ra mắt sản phẩm: Nền tảng AI phân loại tài liệu v2.0
+Mở rộng thị trường: Tiếp cận khách hàng tại Hà Nội và Đà Nẵng
