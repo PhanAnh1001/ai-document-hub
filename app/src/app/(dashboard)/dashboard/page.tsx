@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { FileText, CheckCircle, Clock, AlertCircle, CircleDot } from "lucide-react";
-import { listDocuments, getEntryStats, getDocumentStats, type Document, type DayCount, type EntryStats } from "@/lib/api";
+import { FileText, CheckCircle, Clock, AlertCircle, CircleDot, FolderOpen, Upload } from "lucide-react";
+import { listDocuments, getEntryStats, getDocumentStats, listHubDocuments, type Document, type DayCount, type EntryStats, type HubDocument } from "@/lib/api";
 import { useAuthStore } from "@/lib/auth-store";
 import { Sparkline } from "@/components/sparkline";
 
@@ -54,6 +54,7 @@ export default function DashboardPage() {
   const [docStats, setDocStats] = useState<Record<string, number>>({});
   const [trend, setTrend] = useState<DayCount[]>([]);
   const [chartType, setChartType] = useState<string | undefined>(undefined);
+  const [hubDocs, setHubDocs] = useState<HubDocument[]>([]);
 
   const fetchAll = useCallback(() => {
     if (!token) return;
@@ -69,6 +70,7 @@ export default function DashboardPage() {
     }).catch(() => {});
     getEntryStats(token).then((res) => setEntryStats(res)).catch(() => {});
     getDocumentStats(token, 7, chartType).then((res) => setTrend(res.days)).catch(() => {});
+    listHubDocuments().then((list) => setHubDocs(list)).catch(() => {});
   }, [token, chartType]);
 
   useEffect(() => {
@@ -220,6 +222,83 @@ export default function DashboardPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* AI Document Hub section */}
+      <div>
+        <h2 className="text-lg font-semibold mb-3 flex items-center gap-2">
+          <FolderOpen className="h-5 w-5 text-indigo-500" />
+          AI Document Hub
+        </h2>
+        <div className="grid gap-4 md:grid-cols-3">
+          {/* Quick upload card */}
+          <Link href="/hub/documents">
+            <Card className="hover:shadow-md transition-shadow cursor-pointer border-dashed border-2 border-indigo-200 bg-indigo-50/40">
+              <CardContent className="flex flex-col items-center justify-center py-8 gap-2">
+                <Upload className="h-8 w-8 text-indigo-400" />
+                <p className="text-sm font-medium text-indigo-700">Upload tài liệu mới</p>
+                <p className="text-xs text-indigo-400">PDF, ảnh, TXT</p>
+              </CardContent>
+            </Card>
+          </Link>
+          {/* Total docs stat */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Tổng tài liệu Hub</CardTitle>
+              <FolderOpen className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{hubDocs.length}</div>
+              <CardDescription>Đã upload vào hệ thống</CardDescription>
+            </CardContent>
+          </Card>
+          {/* Indexed docs stat */}
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Đã Index (RAG)</CardTitle>
+              <CheckCircle className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">
+                {hubDocs.filter((d) => d.status === "indexed").length}
+              </div>
+              <CardDescription>Sẵn sàng cho Chat AI</CardDescription>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Recent hub documents */}
+        {hubDocs.length > 0 && (
+          <Card className="mt-4">
+            <CardHeader>
+              <CardTitle className="text-sm font-medium flex items-center justify-between">
+                <span>Tài liệu Hub gần đây</span>
+                <Link href="/hub/documents" className="text-xs text-indigo-600 hover:underline font-normal">
+                  Xem tất cả →
+                </Link>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="divide-y divide-gray-100">
+                {hubDocs.slice(0, 5).map((doc) => (
+                  <li key={doc.id} className="flex items-center justify-between py-2">
+                    <span className="text-sm truncate max-w-xs" title={doc.original_filename}>
+                      {doc.original_filename}
+                    </span>
+                    <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+                      doc.status === "indexed"   ? "bg-purple-100 text-purple-700" :
+                      doc.status === "extracted" ? "bg-green-100 text-green-700" :
+                      doc.status === "failed"    ? "bg-red-100 text-red-700" :
+                                                   "bg-gray-100 text-gray-600"
+                    }`}>
+                      {doc.status}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+        )}
+      </div>
 
       {/* Recent documents */}
       <Card>

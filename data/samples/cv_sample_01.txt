@@ -1,0 +1,50 @@
+CURRICULUM VITAE
+
+HỌ VÀ TÊN: NGUYỄN THỊ MINH ANH
+Ngày sinh: 15/08/1995
+Giới tính: Nữ
+Địa chỉ: 234 Phan Xích Long, Phú Nhuận, TP. Hồ Chí Minh
+Điện thoại: 0901 234 567
+Email: minhanh.nguyen@email.com
+LinkedIn: linkedin.com/in/minhanh-nguyen
+
+MỤC TIÊU NGHỀ NGHIỆP
+Kỹ sư phần mềm với 5 năm kinh nghiệm phát triển ứng dụng web và mobile, mong muốn đóng góp vào các dự án AI/ML và xây dựng sản phẩm công nghệ có tác động xã hội tích cực.
+
+KINH NGHIỆM LÀM VIỆC
+
+Công ty Cổ phần Công nghệ FPT Software — Kỹ sư phần mềm Senior
+Thời gian: 06/2021 — Hiện tại (3 năm)
+- Phát triển microservices bằng Go và Python cho hệ thống xử lý 500.000 giao dịch/ngày
+- Thiết kế và triển khai pipeline AI phân loại tài liệu với độ chính xác 94.5%
+- Tích hợp Large Language Model (GPT-4, Llama) vào quy trình xử lý hóa đơn tự động
+- Mentor 3 junior developer, tổ chức buổi chia sẻ kỹ thuật hàng tuần
+
+Công ty TNHH Thương mại Điện tử Tiki — Kỹ sư Backend
+Thời gian: 08/2019 — 05/2021 (21 tháng)
+- Xây dựng REST API cho module quản lý đơn hàng (Node.js + PostgreSQL)
+- Tối ưu hiệu suất truy vấn database giảm 60% thời gian phản hồi
+- Phát triển hệ thống notification realtime sử dụng Redis Pub/Sub
+
+TRÌNH ĐỘ HỌC VẤN
+Đại học Bách Khoa TP. Hồ Chí Minh
+Ngành: Kỹ thuật Máy tính
+Tốt nghiệp: 2019 — Xếp loại Giỏi (GPA: 8.7/10)
+
+KỸ NĂNG KỸ THUẬT
+Ngôn ngữ lập trình: Python, Go, TypeScript, SQL
+Frameworks: FastAPI, Gin, Next.js, React
+AI/ML: LangChain, Hugging Face Transformers, RAGAS, pgvector
+Database: PostgreSQL, Redis, MongoDB
+DevOps: Docker, Kubernetes, GitHub Actions, AWS
+Công cụ: Git, Jira, Confluence, Figma
+
+CHỨNG CHỈ
+- AWS Certified Solutions Architect — Associate (2023)
+- Google Cloud Professional Data Engineer (2022)
+- Deep Learning Specialization — Coursera/DeepLearning.AI (2021)
+
+NGÔN NGỮ
+- Tiếng Việt: Ngôn ngữ mẹ đẻ
+- Tiếng Anh: Thành thạo (IELTS 7.5)
+- Tiếng Nhật: Cơ bản (N3)

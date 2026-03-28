@@ -1,0 +1,47 @@
+HỢP ĐỒNG DỊCH VỤ CÔNG NGHỆ THÔNG TIN
+Số hợp đồng: HĐ-2024-IT-089
+
+Hôm nay, ngày 01 tháng 04 năm 2024, tại TP. Hồ Chí Minh, chúng tôi gồm:
+
+BÊN A (BÊN THUÊ DỊCH VỤ):
+Tên công ty: Công ty Cổ phần Bán lẻ Toàn Cầu
+Mã số doanh nghiệp: 0315123456
+Địa chỉ trụ sở: 88 Nguyễn Huệ, Quận 1, TP. Hồ Chí Minh
+Người đại diện: Ông Phạm Minh Tuấn — Chức vụ: Giám đốc điều hành
+Điện thoại: 028-3888-9999
+
+BÊN B (BÊN CUNG CẤP DỊCH VỤ):
+Tên công ty: Công ty Cổ phần Giải pháp Phần mềm Đỉnh Cao
+Mã số thuế: 0312876543
+Địa chỉ: 45 Đinh Bộ Lĩnh, Quận Bình Thạnh, TP. Hồ Chí Minh
+Người đại diện: Bà Lê Thị Hồng — Chức vụ: Tổng giám đốc
+Điện thoại: 028-3555-7777
+
+ĐIỀU 1: NỘI DUNG DỊCH VỤ
+Bên B cam kết cung cấp cho Bên A các dịch vụ sau:
+1.1 Xây dựng và triển khai hệ thống quản lý bán hàng (POS) đa chi nhánh
+1.2 Tích hợp với phần mềm kế toán MISA AMIS hiện có
+1.3 Đào tạo nhân viên vận hành hệ thống (tối đa 20 người)
+1.4 Hỗ trợ kỹ thuật 24/7 trong vòng 12 tháng
+
+ĐIỀU 2: THỜI GIAN THỰC HIỆN
+Thời gian bắt đầu: 01/05/2024
+Thời gian hoàn thành: 31/08/2024
+Thời gian bảo hành: 12 tháng kể từ ngày nghiệm thu
+
+ĐIỀU 3: GIÁ TRỊ HỢP ĐỒNG VÀ PHƯƠNG THỨC THANH TOÁN
+Tổng giá trị hợp đồng: 250.000.000 đồng (Hai trăm năm mươi triệu đồng)
+Chưa bao gồm thuế VAT 10%: 25.000.000 đồng
+Tổng thanh toán: 275.000.000 đồng
+
+Lịch thanh toán:
+- Đợt 1 (ký hợp đồng): 30% — 82.500.000 đồng
+- Đợt 2 (nghiệm thu module 1): 40% — 110.000.000 đồng
+- Đợt 3 (nghiệm thu toàn bộ): 30% — 82.500.000 đồng
+
+ĐIỀU 4: TRÁCH NHIỆM CÁC BÊN
+Bên A có trách nhiệm: Cung cấp đầy đủ dữ liệu và thông tin cần thiết, bố trí nhân sự phối hợp triển khai.
+Bên B có trách nhiệm: Thực hiện đúng tiến độ, đảm bảo chất lượng, bảo mật thông tin của Bên A.
+
+ĐẠI DIỆN BÊN A                    ĐẠI DIỆN BÊN B
+(Ký, đóng dấu)                     (Ký, đóng dấu)
