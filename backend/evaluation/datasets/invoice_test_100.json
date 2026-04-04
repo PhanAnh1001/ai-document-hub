@@ -1,0 +1,152 @@
+[
+  {
+    "id": "inv_001",
+    "doc_type": "invoice",
+    "ocr_text": "HÓA ĐƠN GIÁ TRỊ GIA TĂNG\nSố: 001\nNgày: 15/01/2024\nĐơn vị bán hàng: Công ty TNHH ABC\nMã số thuế: 0123456789\nĐịa chỉ: 123 Nguyễn Văn Linh, Q7, TP.HCM\n\nTên hàng hóa: Máy tính xách tay Dell XPS 15\nSố lượng: 2\nĐơn giá: 25,000,000 VNĐ\nThành tiền: 50,000,000 VNĐ\n\nThuế GTGT (10%): 5,000,000 VNĐ\nTổng cộng: 55,000,000 VNĐ\n\nNgười mua: Trần Văn B\nMã số thuế NM: 9876543210",
+    "expected_extraction": {
+      "vendor": "Công ty TNHH ABC",
+      "tax_id": "0123456789",
+      "date": "15/01/2024",
+      "invoice_number": "001",
+      "total": 55000000,
+      "subtotal": 50000000,
+      "tax_amount": 5000000,
+      "buyer": "Trần Văn B"
+    }
+  },
+  {
+    "id": "inv_002",
+    "doc_type": "invoice",
+    "ocr_text": "HÓA ĐƠN GIÁ TRỊ GIA TĂNG\nSố: 0023\nNgày: 03/02/2024\nĐơn vị bán hàng: Công ty CP Phần mềm Việt\nMã số thuế: 0312456789\nĐịa chỉ: 45 Đinh Tiên Hoàng, Q1, TP.HCM\n\nDịch vụ: Phát triển phần mềm quản lý kho\nThời gian: Tháng 01/2024\nGiá dịch vụ: 80,000,000 VNĐ\n\nThuế GTGT (10%): 8,000,000 VNĐ\nTổng cộng: 88,000,000 VNĐ\n\nNgười mua: Công ty TNHH Thương mại XYZ\nMã số thuế NM: 0198765432",
+    "expected_extraction": {
+      "vendor": "Công ty CP Phần mềm Việt",
+      "tax_id": "0312456789",
+      "date": "03/02/2024",
+      "invoice_number": "0023",
+      "total": 88000000,
+      "subtotal": 80000000,
+      "tax_amount": 8000000,
+      "buyer": "Công ty TNHH Thương mại XYZ"
+    }
+  },
+  {
+    "id": "inv_003",
+    "doc_type": "invoice",
+    "ocr_text": "HÓA ĐƠN\nSố: HĐ-2024-0099\nNgày: 20/03/2024\nBên bán: Siêu thị Điện máy Chợ Lớn\nMST: 0407891234\nĐịa chỉ: 78 Tôn Thất Tùng, Q5, TP.HCM\n\nSản phẩm 1: Tủ lạnh Samsung 400L - 1 cái - 12,500,000 VNĐ\nSản phẩm 2: Máy giặt LG 9kg - 1 cái - 9,200,000 VNĐ\nCộng tiền hàng: 21,700,000 VNĐ\nThuế VAT 10%: 2,170,000 VNĐ\nTổng thanh toán: 23,870,000 VNĐ\n\nKhách hàng: Nguyễn Thị C",
+    "expected_extraction": {
+      "vendor": "Siêu thị Điện máy Chợ Lớn",
+      "tax_id": "0407891234",
+      "date": "20/03/2024",
+      "invoice_number": "HĐ-2024-0099",
+      "total": 23870000,
+      "subtotal": 21700000,
+      "tax_amount": 2170000,
+      "buyer": "Nguyễn Thị C"
+    }
+  },
+  {
+    "id": "inv_004",
+    "doc_type": "invoice",
+    "ocr_text": "INVOICE\nInvoice No: INV-2024-0150\nDate: 05/04/2024\nFrom: FPT Software JSC\nTax ID: 0101248141\nAddress: Tòa nhà FPT, Duy Tân, Cầu Giấy, Hà Nội\n\nItem: Software License (Annual) - 3 seats\nUnit Price: 15,000,000 VNĐ\nQuantity: 3\nAmount: 45,000,000 VNĐ\n\nVAT 10%: 4,500,000 VNĐ\nTotal: 49,500,000 VNĐ\n\nBill To: Lê Minh D\nBuyer Tax ID: 0301456789",
+    "expected_extraction": {
+      "vendor": "FPT Software JSC",
+      "tax_id": "0101248141",
+      "date": "05/04/2024",
+      "invoice_number": "INV-2024-0150",
+      "total": 49500000,
+      "subtotal": 45000000,
+      "tax_amount": 4500000,
+      "buyer": "Lê Minh D"
+    }
+  },
+  {
+    "id": "inv_005",
+    "doc_type": "invoice",
+    "ocr_text": "HÓA ĐƠN GIÁ TRỊ GIA TĂNG\nSố: 00785\nNgày phát hành: 12/05/2024\nNhà cung cấp: Công ty TNHH In ấn Tiến Phát\nMST: 0503129870\nĐịa chỉ: 22 Lê Lợi, Q.1, TP.HCM\n\nDịch vụ in ấn catalog sản phẩm: 500 cuốn\nĐơn giá: 50,000 VNĐ/cuốn\nThành tiền: 25,000,000 VNĐ\nPhụ phí thiết kế: 3,000,000 VNĐ\nCộng: 28,000,000 VNĐ\nThuế GTGT 10%: 2,800,000 VNĐ\nTổng cộng: 30,800,000 VNĐ\n\nNgười mua hàng: Phạm Quốc E\nMST: 0601234567",
+    "expected_extraction": {
+      "vendor": "Công ty TNHH In ấn Tiến Phát",
+      "tax_id": "0503129870",
+      "date": "12/05/2024",
+      "invoice_number": "00785",
+      "total": 30800000,
+      "subtotal": 28000000,
+      "tax_amount": 2800000,
+      "buyer": "Phạm Quốc E"
+    }
+  },
+  {
+    "id": "inv_006",
+    "doc_type": "invoice",
+    "ocr_text": "HÓA ĐƠN GIÁ TRỊ GIA TĂNG\nSố: 002021\nNgày: 25/06/2024\nĐơn vị bán hàng: Công ty Bất động sản Phú Hưng\nMã số thuế: 0901234567\nĐịa chỉ: 10 Ngô Đức Kế, Quận 1, TP.HCM\n\nDịch vụ: Môi giới cho thuê văn phòng 6 tháng\nGiá trị hợp đồng: 120,000,000 VNĐ\nHoa hồng môi giới (5%): 6,000,000 VNĐ\nCộng tiền dịch vụ: 6,000,000 VNĐ\nThuế GTGT 10%: 600,000 VNĐ\nTổng thanh toán: 6,600,000 VNĐ\n\nKhách hàng: Hoàng Anh F",
+    "expected_extraction": {
+      "vendor": "Công ty Bất động sản Phú Hưng",
+      "tax_id": "0901234567",
+      "date": "25/06/2024",
+      "invoice_number": "002021",
+      "total": 6600000,
+      "subtotal": 6000000,
+      "tax_amount": 600000,
+      "buyer": "Hoàng Anh F"
+    }
+  },
+  {
+    "id": "inv_007",
+    "doc_type": "invoice",
+    "ocr_text": "HÓA ĐƠN\nSố hóa đơn: HD-07-2024-0345\nNgày: 10/07/2024\nBên bán: Nhà hàng Hải Sản Biển Xanh\nMST: 1002345678\nĐịa chỉ: 55 Trần Phú, Nha Trang\n\nThực đơn tiệc công ty (50 người):\n- Buffet hải sản cao cấp: 50 x 350,000 = 17,500,000 VNĐ\n- Đồ uống: 2,000,000 VNĐ\n- Trang trí: 500,000 VNĐ\nCộng: 20,000,000 VNĐ\nThuế 10%: 2,000,000 VNĐ\nTổng: 22,000,000 VNĐ\n\nĐơn vị đặt tiệc: Công ty TNHH Sản xuất G",
+    "expected_extraction": {
+      "vendor": "Nhà hàng Hải Sản Biển Xanh",
+      "tax_id": "1002345678",
+      "date": "10/07/2024",
+      "invoice_number": "HD-07-2024-0345",
+      "total": 22000000,
+      "subtotal": 20000000,
+      "tax_amount": 2000000,
+      "buyer": "Công ty TNHH Sản xuất G"
+    }
+  },
+  {
+    "id": "inv_008",
+    "doc_type": "invoice",
+    "ocr_text": "HÓA ĐƠN GIÁ TRỊ GIA TĂNG\nSố: 008-2024\nNgày lập: 18/08/2024\nBên bán: Công ty CP Logistics Đông Nam\nMST: 0803987654\nĐịa chỉ: KCN Tân Bình, TP.HCM\n\nDịch vụ vận chuyển hàng hóa HCM - HN\nKhối lượng: 5,000 kg\nĐơn giá: 3,000 VNĐ/kg\nCước phí: 15,000,000 VNĐ\nPhụ phí nhiên liệu: 750,000 VNĐ\nCộng: 15,750,000 VNĐ\nThuế GTGT 10%: 1,575,000 VNĐ\nTổng cộng: 17,325,000 VNĐ\n\nNgười mua: Công ty TNHH Xuất nhập khẩu H",
+    "expected_extraction": {
+      "vendor": "Công ty CP Logistics Đông Nam",
+      "tax_id": "0803987654",
+      "date": "18/08/2024",
+      "invoice_number": "008-2024",
+      "total": 17325000,
+      "subtotal": 15750000,
+      "tax_amount": 1575000,
+      "buyer": "Công ty TNHH Xuất nhập khẩu H"
+    }
+  },
+  {
+    "id": "inv_009",
+    "doc_type": "invoice",
+    "ocr_text": "HÓA ĐƠN GIÁ TRỊ GIA TĂNG\nSố: 009/2024/HĐ\nNgày: 05/09/2024\nNhà cung cấp: Trường Đào tạo Kỹ năng Tương lai\nMST: 0700111222\nĐịa chỉ: 301 Điện Biên Phủ, Bình Thạnh, TP.HCM\n\nKhóa học: Lập trình Python cho Data Science (20 buổi)\nSố học viên: 10 người\nHọc phí/người: 4,500,000 VNĐ\nTổng học phí: 45,000,000 VNĐ\nThuế GTGT 10%: 4,500,000 VNĐ\nTổng thanh toán: 49,500,000 VNĐ\n\nĐơn vị tài trợ: Tập đoàn Công nghệ I",
+    "expected_extraction": {
+      "vendor": "Trường Đào tạo Kỹ năng Tương lai",
+      "tax_id": "0700111222",
+      "date": "05/09/2024",
+      "invoice_number": "009/2024/HĐ",
+      "total": 49500000,
+      "subtotal": 45000000,
+      "tax_amount": 4500000,
+      "buyer": "Tập đoàn Công nghệ I"
+    }
+  },
+  {
+    "id": "inv_010",
+    "doc_type": "invoice",
+    "ocr_text": "HÓA ĐƠN GIÁ TRỊ GIA TĂNG\nSố: 0010/HĐ/2024\nNgày phát hành: 30/10/2024\nBên bán: Công ty TNHH Quảng cáo Sáng tạo\nMST: 1100998877\nĐịa chỉ: 14 Lý Tự Trọng, Quận 1, TP.HCM\n\nDịch vụ chạy quảng cáo Facebook Ads - Tháng 10/2024\nNgân sách quảng cáo: 50,000,000 VNĐ\nPhí quản lý (10%): 5,000,000 VNĐ\nCộng: 55,000,000 VNĐ\nThuế GTGT 10%: 5,500,000 VNĐ\nTổng cộng: 60,500,000 VNĐ\n\nKhách hàng: Nguyễn Hoàng J\nMST: 0300112233",
+    "expected_extraction": {
+      "vendor": "Công ty TNHH Quảng cáo Sáng tạo",
+      "tax_id": "1100998877",
+      "date": "30/10/2024",
+      "invoice_number": "0010/HĐ/2024",
+      "total": 60500000,
+      "subtotal": 55000000,
+      "tax_amount": 5500000,
+      "buyer": "Nguyễn Hoàng J"
+    }
+  }
+]
