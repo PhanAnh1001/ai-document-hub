@@ -70,6 +70,7 @@ export default function DashboardPage() {
     }).catch(() => {});
     getEntryStats(token).then((res) => setEntryStats(res)).catch(() => {});
     getDocumentStats(token, 7, chartType).then((res) => setTrend(res.days)).catch(() => {});
+    listHubDocuments().then((list) => setHubDocs(list)).catch(() => {});
   }, [token, chartType]);
 
   useEffect(() => {
