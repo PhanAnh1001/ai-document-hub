@@ -80,9 +80,10 @@ class RAGService:
     async def index_document(self, doc_id: str, text: str, db_session) -> list[dict]:
         """
         Chunk text, embed chunks, store in document_chunks table.
+        Stores embedding in both embedding_json (always) and embedding (pgvector, if available).
         Returns list of chunk dicts.
         """
-        from app.models.db_models import DocumentChunk
+        from app.models.db_models import DocumentChunk, PGVECTOR_AVAILABLE
 
         chunks = self._chunk_text(text)
         if not chunks:
@@ -91,12 +92,17 @@ class RAGService:
         chunk_records = []
         for i, chunk_text in enumerate(chunks):
             embedding = self._embed_text(chunk_text)
-            chunk = DocumentChunk(
-                document_id=doc_id,
-                chunk_index=float(i),
-                chunk_text=chunk_text,
-                embedding_json=embedding,
-            )
+            chunk_data: dict = {
+                "document_id": doc_id,
+                "chunk_index": float(i),
+                "chunk_text": chunk_text,
+                "embedding_json": embedding,
+            }
+            # Store in native pgvector column when available
+            if PGVECTOR_AVAILABLE:
+                chunk_data["embedding"] = embedding  # pgvector handles list→vector conversion
+
+            chunk = DocumentChunk(**chunk_data)
             db_session.add(chunk)
             chunk_records.append({
                 "chunk_index": i,
