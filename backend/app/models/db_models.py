@@ -5,6 +5,14 @@ from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import DeclarativeBase
 import enum
 
+# Try to import pgvector; gracefully skip if not installed or DB doesn't support it
+try:
+    from pgvector.sqlalchemy import Vector
+    PGVECTOR_AVAILABLE = True
+except ImportError:
+    PGVECTOR_AVAILABLE = False
+    Vector = None
+
 
 class DocumentStatus(str, enum.Enum):
     UPLOADED = "uploaded"
