@@ -1,0 +1,67 @@
+# Production docker-compose for AWS Lightsail.
+# All secret values are read from .env (written by the deploy workflow).
+#
+# Usage on server:
+#   docker compose --env-file .env -f docker-compose.prod.yml up -d
+#
+# Required .env vars: POSTGRES_DB, POSTGRES_USER, POSTGRES_PASSWORD,
+#   DATABASE_URL, JWT_SECRET, CORS_ORIGINS, PORT, GHCR_REPO, IMAGE_TAG
+
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ai-accounting-postgres
+    environment:
+      POSTGRES_DB:       ${POSTGRES_DB}
+      POSTGRES_USER:     ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+    # Do NOT expose port 5432 to the host in production
+    networks:
+      - internal
+
+  backend:
+    image: ghcr.io/${GHCR_REPO}/backend:${IMAGE_TAG:-latest}
+    container_name: ai-accounting-backend
+    ports:
+      - "8080:8080"
+    environment:
+      DATABASE_URL:      ${DATABASE_URL}
+      JWT_SECRET:        ${JWT_SECRET}
+      CORS_ORIGINS:      ${CORS_ORIGINS}
+      PORT:              ${PORT:-8080}
+      OCR_PROVIDER:      ${OCR_PROVIDER:-mock}
+      OCR_API_KEY:       ${OCR_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      MISA_API_URL:      ${MISA_API_URL:-}
+      MISA_API_KEY:      ${MISA_API_KEY:-}
+      MISA_APP_ID:       ${MISA_APP_ID:-}
+      UPLOAD_DIR:        /data/uploads
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - internal
+      - public
+
+volumes:
+  postgres_data:
+  uploads:
+
+networks:
+  internal:
+    driver: bridge
+  public:
+    driver: bridge

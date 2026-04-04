@@ -1,0 +1,31 @@
+# dependencies
+node_modules/
+
+# env
+.env
+.env.local
+.env.*.local
+
+# next.js
+.next/
+out/
+
+# build
+build/
+dist/
+
+# misc
+.DS_Store
+*.pem
+*.log
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# sentry
+.sentryclirc
+
+# vercel
+.vercel
