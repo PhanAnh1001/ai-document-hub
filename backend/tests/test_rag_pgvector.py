@@ -42,8 +42,11 @@ class TestIndexDocumentCreatesChunks:
         resp = await client.post("/api/v1/documents/upload", files=files)
         doc_id = resp.json()["doc_id"]
         await client.post(f"/api/v1/ocr/process/{doc_id}")
-        # Extract also indexes the document
-        await client.post(f"/api/v1/extract/process/{doc_id}", json={"doc_type": "invoice"})
+        # Trigger indexing via query endpoint (uses _ensure_indexed internally)
+        await client.post(
+            "/api/v1/query/",
+            json={"question": "What is this document?", "doc_ids": [doc_id]},
+        )
 
         result = await db_session.execute(
             select(DocumentChunk).where(DocumentChunk.document_id == doc_id)
