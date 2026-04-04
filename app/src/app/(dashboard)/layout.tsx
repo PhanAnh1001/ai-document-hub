@@ -10,6 +10,9 @@ import {
   Settings,
   User,
   LogOut,
+  MessageSquare,
+  BarChart2,
+  FolderOpen,
 } from "lucide-react";
 import { useAuthStore } from "@/lib/auth-store";
 import { getEntryStats } from "@/lib/api";
