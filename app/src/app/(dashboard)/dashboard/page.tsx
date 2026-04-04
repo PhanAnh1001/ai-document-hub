@@ -54,6 +54,7 @@ export default function DashboardPage() {
   const [docStats, setDocStats] = useState<Record<string, number>>({});
   const [trend, setTrend] = useState<DayCount[]>([]);
   const [chartType, setChartType] = useState<string | undefined>(undefined);
+  const [hubDocs, setHubDocs] = useState<HubDocument[]>([]);
 
   const fetchAll = useCallback(() => {
     if (!token) return;
