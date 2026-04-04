@@ -37,3 +37,5 @@
 - [x] docker-compose: pgvector/pgvector:pg16 + Redis 7 + FastAPI port 8000
 - [x] Phase 3+4: pgvector native vector search + evaluation datasets + batch eval + 17 new tests
 - [x] Phase 5+6: QLoRA notebooks (Colab) + RAGAS eval notebook + sample data + CI/CD + README
+- [x] Rewrite README.md (EN) cho AI engineer interview: CI badges, pipeline diagram, technical highlights, limitations table; fix test count 28→45, fix git clone URL
+- [x] Thêm README_VI.md — bản tiếng Việt đầy đủ
