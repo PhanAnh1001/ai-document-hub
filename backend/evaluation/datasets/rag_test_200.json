@@ -1,0 +1,72 @@
+[
+  {
+    "id": "rag_001",
+    "question": "Tổng số tiền hóa đơn từ Công ty TNHH ABC là bao nhiêu?",
+    "context": "Hóa đơn số 001 từ Công ty TNHH ABC, ngày 15/01/2024. Tổng cộng: 55,000,000 VNĐ (bao gồm thuế GTGT 10%).",
+    "expected_answer_keywords": ["55,000,000", "ABC", "VNĐ"],
+    "ground_truth": "Tổng số tiền hóa đơn từ Công ty TNHH ABC là 55,000,000 VNĐ."
+  },
+  {
+    "id": "rag_002",
+    "question": "Mã số thuế của Công ty CP Phần mềm Việt là gì?",
+    "context": "Công ty CP Phần mềm Việt, Mã số thuế: 0312456789, địa chỉ: 45 Đinh Tiên Hoàng, Q1, TP.HCM.",
+    "expected_answer_keywords": ["0312456789", "Phần mềm Việt"],
+    "ground_truth": "Mã số thuế của Công ty CP Phần mềm Việt là 0312456789."
+  },
+  {
+    "id": "rag_003",
+    "question": "Thuế GTGT trên hóa đơn mua tủ lạnh và máy giặt là bao nhiêu?",
+    "context": "Hóa đơn từ Siêu thị Điện máy Chợ Lớn: Tủ lạnh Samsung 400L - 12,500,000 VNĐ, Máy giặt LG 9kg - 9,200,000 VNĐ. Thuế VAT 10%: 2,170,000 VNĐ.",
+    "expected_answer_keywords": ["2,170,000", "10%", "VAT"],
+    "ground_truth": "Thuế GTGT (10%) trên hóa đơn mua tủ lạnh và máy giặt là 2,170,000 VNĐ."
+  },
+  {
+    "id": "rag_004",
+    "question": "FPT Software JSC bán bao nhiêu bản quyền phần mềm và giá mỗi bản là bao nhiêu?",
+    "context": "Hóa đơn INV-2024-0150 từ FPT Software JSC: Software License (Annual) - 3 seats. Unit Price: 15,000,000 VNĐ. Quantity: 3. Amount: 45,000,000 VNĐ.",
+    "expected_answer_keywords": ["3", "15,000,000", "FPT"],
+    "ground_truth": "FPT Software JSC bán 3 bản quyền phần mềm (license), mỗi bản 15,000,000 VNĐ."
+  },
+  {
+    "id": "rag_005",
+    "question": "Công ty In ấn Tiến Phát in bao nhiêu cuốn catalog và đơn giá mỗi cuốn?",
+    "context": "Dịch vụ in ấn catalog sản phẩm: 500 cuốn. Đơn giá: 50,000 VNĐ/cuốn. Thành tiền: 25,000,000 VNĐ. Phụ phí thiết kế: 3,000,000 VNĐ.",
+    "expected_answer_keywords": ["500", "50,000", "catalog"],
+    "ground_truth": "Công ty In ấn Tiến Phát in 500 cuốn catalog với đơn giá 50,000 VNĐ/cuốn."
+  },
+  {
+    "id": "rag_006",
+    "question": "Hoa hồng môi giới bất động sản chiếm bao nhiêu phần trăm giá trị hợp đồng?",
+    "context": "Công ty Bất động sản Phú Hưng: Dịch vụ môi giới cho thuê văn phòng 6 tháng. Giá trị hợp đồng: 120,000,000 VNĐ. Hoa hồng môi giới (5%): 6,000,000 VNĐ.",
+    "expected_answer_keywords": ["5%", "6,000,000", "môi giới"],
+    "ground_truth": "Hoa hồng môi giới chiếm 5% giá trị hợp đồng, tương đương 6,000,000 VNĐ."
+  },
+  {
+    "id": "rag_007",
+    "question": "Tiệc công ty tại nhà hàng Biển Xanh phục vụ bao nhiêu người và giá buffet mỗi người?",
+    "context": "Nhà hàng Hải Sản Biển Xanh: Buffet hải sản cao cấp (50 người): 50 x 350,000 = 17,500,000 VNĐ.",
+    "expected_answer_keywords": ["50", "350,000", "buffet"],
+    "ground_truth": "Tiệc công ty phục vụ 50 người, giá buffet 350,000 VNĐ/người."
+  },
+  {
+    "id": "rag_008",
+    "question": "Cước phí vận chuyển của Logistics Đông Nam tính theo đơn vị nào và bao nhiêu tiền mỗi đơn vị?",
+    "context": "Công ty CP Logistics Đông Nam: Dịch vụ vận chuyển hàng hóa HCM - HN. Khối lượng: 5,000 kg. Đơn giá: 3,000 VNĐ/kg. Cước phí: 15,000,000 VNĐ.",
+    "expected_answer_keywords": ["3,000", "kg", "vận chuyển"],
+    "ground_truth": "Cước phí tính theo kg, giá 3,000 VNĐ/kg."
+  },
+  {
+    "id": "rag_009",
+    "question": "Khóa học Python tại Trường Đào tạo Kỹ năng Tương lai kéo dài bao nhiêu buổi và học phí mỗi người là bao nhiêu?",
+    "context": "Trường Đào tạo Kỹ năng Tương lai: Khóa học Lập trình Python cho Data Science (20 buổi). Số học viên: 10 người. Học phí/người: 4,500,000 VNĐ.",
+    "expected_answer_keywords": ["20", "4,500,000", "Python"],
+    "ground_truth": "Khóa học Python kéo dài 20 buổi, học phí 4,500,000 VNĐ/người."
+  },
+  {
+    "id": "rag_010",
+    "question": "Ngân sách chạy quảng cáo Facebook Ads tháng 10/2024 và phí quản lý của Công ty Quảng cáo Sáng tạo là bao nhiêu?",
+    "context": "Công ty TNHH Quảng cáo Sáng tạo: Dịch vụ chạy quảng cáo Facebook Ads - Tháng 10/2024. Ngân sách quảng cáo: 50,000,000 VNĐ. Phí quản lý (10%): 5,000,000 VNĐ.",
+    "expected_answer_keywords": ["50,000,000", "5,000,000", "Facebook"],
+    "ground_truth": "Ngân sách quảng cáo Facebook Ads là 50,000,000 VNĐ, phí quản lý 10% tương đương 5,000,000 VNĐ."
+  }
+]
