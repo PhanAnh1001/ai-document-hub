@@ -2,15 +2,14 @@
 > Last updated: 2026-04-04
 
 ## Trạng thái hiện tại
-- Phase: 1+2 — Completed (FastAPI backend + Next.js AI Document Hub pages)
+- Phase: 3+4+5+6 — In Progress (pgvector, eval, notebooks, CI/CD)
 - Branch: `claude/complete-implementation-tdd-TLcKo`
 
 ## TODO
-- [ ] Cập nhật docker-compose.yml: đổi sang FastAPI (port 8000) + pgvector + Redis
-- [ ] Phase 3: RAG pipeline — BGE-M3 embedding, document indexing, query pipeline
-- [ ] Phase 4: Evaluation — RAGAS pipeline, field-level accuracy, metrics dashboard
-- [ ] Phase 5: Fine-tuning — QLoRA notebook trên Colab, dataset prep, before/after comparison
-- [ ] Phase 6: Polish — sample data, README, demo prep, CI/CD
+- [ ] Phase 3: pgvector native search (agent đang chạy) — verify tests pass
+- [ ] Phase 4: evaluation datasets + RAGAS (agent đang chạy)
+- [ ] Phase 5: QLoRA notebooks (agent đang chạy)
+- [ ] Phase 6: sample data, README, CI/CD (agent đang chạy)
 
 ## Notes
 - Concept: AI Document Hub — upload document (hóa đơn, hợp đồng, CV, báo cáo) → OCR → extraction → RAG Q&A
@@ -20,6 +19,8 @@
 - OCR: PaddleOCR local (mock in tests) + Google Vision fallback
 - LLM: Groq/Llama 3.3 70B — mock khi không có API key (`GROQ_API_KEY`)
 - Embedding: BGE-M3 local (mock in tests, 1024 dim)
+- pgvector: `PGVECTOR_AVAILABLE` flag — dùng native vector column khi có pgvector, fallback JSON cosine
+- docker-compose: pgvector/pgvector:pg16 + Redis 7 + FastAPI port 8000
 - Test strategy: SQLite (aiosqlite) cho pytest, jsdom cho Vitest, Playwright E2E mocked
 - Run backend: `cd backend && uv run uvicorn app.main:app --reload`
 - Run tests: backend `uv run pytest`, frontend `cd app && npm test`
@@ -28,3 +29,4 @@
 ## Đã hoàn thành
 - [x] Tạo system design: `system-design/overview.md` + `system-design/system-design.md` (10 Mermaid diagrams)
 - [x] Phase 1+2: Python FastAPI backend (28 pytest) + Next.js AI Document Hub UI (199 Vitest), TDD
+- [x] docker-compose.yml: pgvector/pgvector:pg16 + Redis 7 + FastAPI port 8000
