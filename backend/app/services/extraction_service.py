@@ -36,7 +36,8 @@ class ExtractionService:
             return {"error": "No text to extract from"}
 
         prompt_template = PROMPT_MAP.get(doc_type, GENERAL_EXTRACTION_PROMPT)
-        prompt = prompt_template.format(text=text[:4000])  # limit context
+        # Use simple replace to avoid KeyError from {field} placeholders in prompt
+        prompt = prompt_template.replace("{text}", text[:4000])
 
         raw_response = await self.llm.complete(prompt)
         return self._parse_json_response(raw_response, doc_type)
