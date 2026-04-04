@@ -1,0 +1,14 @@
+{
+  "evaluation_date": null,
+  "num_samples": 0,
+  "overall_accuracy": null,
+  "field_accuracy": {
+    "vendor": null,
+    "tax_id": null,
+    "date": null,
+    "total": null,
+    "line_items": null
+  },
+  "field_details": {},
+  "notes": "Run notebooks/evaluation_extraction.ipynb to populate this file"
+}
