@@ -244,12 +244,11 @@ class TestEvaluationExtractionAccuracy:
         """batch_evaluate returns aggregated metrics across dataset items."""
         from app.services.evaluation_service import EvaluationService
         from app.services.rag_service import RAGService
-        from app.config import get_settings
+        from app.config import settings
 
         class MockLLM:
             async def complete(self, prompt): return "mock llm answer for batch eval"
 
-        settings = get_settings()
         rag = RAGService(MockLLM(), settings)
         svc = EvaluationService(MockLLM(), rag)
 
