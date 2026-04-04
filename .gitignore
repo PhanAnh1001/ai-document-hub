@@ -29,3 +29,17 @@ dist/
 
 # vercel
 .vercel
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+*.egg-info/
+.pytest_cache/
+
+# Test artifacts
+backend/test.db
+backend/test.db-journal
+backend/*.db
+backend/*.db-journal

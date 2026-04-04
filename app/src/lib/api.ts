@@ -369,3 +369,107 @@ export async function healthCheck() {
 }
 
 export { apiFetch };
+
+// ── AI Document Hub API (FastAPI backend at NEXT_PUBLIC_API_URL, port 8000) ──
+
+const HUB_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+
+async function hubFetch<T>(path: string, opts: RequestInit = {}): Promise<T> {
+  const res = await fetch(`${HUB_API_URL}${path}`, {
+    headers: {
+      "Content-Type": "application/json",
+      ...opts.headers,
+    },
+    ...opts,
+  });
+
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(error.detail || `API error: ${res.status}`);
+  }
+
+  return res.json();
+}
+
+export interface HubDocument {
+  id: string;
+  filename: string;
+  original_filename: string;
+  doc_type: "invoice" | "contract" | "cv" | "report" | "other";
+  status:
+    | "uploaded"
+    | "ocr_processing"
+    | "ocr_done"
+    | "extracting"
+    | "extracted"
+    | "indexing"
+    | "indexed"
+    | "failed";
+  ocr_text?: string;
+  ocr_confidence?: number;
+  extracted_data?: Record<string, unknown>;
+  created_at: string;
+}
+
+export interface QueryRequest {
+  question: string;
+  doc_ids?: string[];
+}
+
+export interface QueryResponse {
+  answer: string;
+  sources: Array<{ doc_id: string; chunk_text: string; score: number }>;
+}
+
+export interface EvalStats {
+  faithfulness: number;
+  answer_relevancy: number;
+  context_precision: number;
+  total_documents: number;
+}
+
+export async function uploadHubDocument(
+  file: File,
+  docType = "other"
+): Promise<HubDocument> {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("doc_type", docType);
+
+  const res = await fetch(`${HUB_API_URL}/api/v1/documents/upload`, {
+    method: "POST",
+    body: formData,
+  });
+  if (!res.ok) {
+    const error = await res.json().catch(() => ({ detail: res.statusText }));
+    throw new Error(error.detail || `API error: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function listHubDocuments(): Promise<HubDocument[]> {
+  return hubFetch<HubDocument[]>("/api/v1/documents/");
+}
+
+export async function getHubDocument(id: string): Promise<HubDocument> {
+  return hubFetch<HubDocument>(`/api/v1/documents/${id}`);
+}
+
+export async function deleteHubDocument(id: string): Promise<void> {
+  await hubFetch<void>(`/api/v1/documents/${id}`, { method: "DELETE" });
+}
+
+export async function queryRAG(req: QueryRequest): Promise<QueryResponse> {
+  return hubFetch<QueryResponse>("/api/v1/query/", {
+    method: "POST",
+    body: JSON.stringify(req),
+  });
+}
+
+export async function getEvalStats(): Promise<EvalStats> {
+  return hubFetch<EvalStats>("/api/v1/eval/stats");
+}
+
+export async function runEvaluation(): Promise<{ message: string }> {
+  return hubFetch<{ message: string }>("/api/v1/eval/run", { method: "POST" });
+}

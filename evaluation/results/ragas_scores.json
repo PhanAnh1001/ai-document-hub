@@ -1,0 +1,13 @@
+{
+  "evaluation_date": null,
+  "model": null,
+  "num_samples": 0,
+  "scores": {
+    "faithfulness": null,
+    "answer_relevancy": null,
+    "context_precision": null,
+    "context_recall": null
+  },
+  "average_score": null,
+  "notes": "Run notebooks/evaluation_rag.ipynb to populate this file"
+}
