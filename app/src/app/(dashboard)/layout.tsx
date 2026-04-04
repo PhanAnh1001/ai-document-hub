@@ -22,6 +22,10 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/documents", label: "Chứng từ", icon: FileText },
   { href: "/entries", label: "Định khoản", icon: BookOpen },
+  // AI Document Hub
+  { href: "/hub/documents", label: "Tài liệu", icon: FolderOpen },
+  { href: "/chat", label: "Chat AI", icon: MessageSquare },
+  { href: "/evaluation", label: "Đánh giá", icon: BarChart2 },
   { href: "/settings", label: "Cài đặt", icon: Settings },
   { href: "/profile", label: "Hồ sơ", icon: User },
 ];
