@@ -111,10 +111,10 @@ class EvalResponse(BaseModel):
 
 class EvalStatsResponse(BaseModel):
     total_evaluations: int
-    avg_faithfulness: float
-    avg_answer_relevancy: float
-    avg_context_precision: float
-    avg_extraction_accuracy: Optional[float] = None
+    faithfulness: float
+    answer_relevancy: float
+    context_precision: float
+    extraction_accuracy: Optional[float] = None
 
 
 class EvalRunRequest(BaseModel):
