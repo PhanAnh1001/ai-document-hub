@@ -1,0 +1,32 @@
+HÓA ĐƠN GIÁ TRỊ GIA TĂNG
+Ký hiệu: BB/24E
+Số: 0005678
+Ngày phát hành: 15/07/2024
+
+ĐƠN VỊ BÁN HÀNG:
+Tên đơn vị: Công ty TNHH Dịch vụ Vận tải Nhanh
+Mã số thuế: 0314987654
+Địa chỉ: 123 Trần Hưng Đạo, Quận 5, TP. Hồ Chí Minh
+Điện thoại: 028-3987-6543
+Email: info@vantainhanh.vn
+
+NGƯỜI MUA HÀNG:
+Tên đơn vị: Công ty Cổ phần Thương mại Minh Phát
+Mã số thuế: 0201234567
+Địa chỉ: 55 Nguyễn Trãi, Quận Thanh Xuân, Hà Nội
+Người nhận hóa đơn: Nguyễn Thị Lan
+
+STT | Tên dịch vụ                        | ĐVT      | SL | Đơn giá    | Thành tiền
+1   | Vận chuyển container 20ft HCM-HN  | Chuyến   |  3 | 12.000.000 | 36.000.000
+2   | Phụ phí nhiên liệu                 | Chuyến   |  3 |  1.200.000 |  3.600.000
+3   | Phí bốc xếp hàng hóa              | Chuyến   |  3 |    800.000 |  2.400.000
+4   | Dịch vụ theo dõi hàng hóa GPS     | Tháng    |  1 |    500.000 |    500.000
+
+Cộng tiền dịch vụ: 42.500.000 đồng
+Thuế suất GTGT: 10% — Tiền thuế GTGT: 4.250.000 đồng
+Tổng cộng tiền thanh toán: 46.750.000 đồng
+(Bằng chữ: Bốn mươi sáu triệu bảy trăm năm mươi nghìn đồng chẵn)
+
+Hình thức thanh toán: Chuyển khoản trong 30 ngày
+Số tài khoản: 1234567890 — Ngân hàng Techcombank
+Chi nhánh: TP. Hồ Chí Minh
