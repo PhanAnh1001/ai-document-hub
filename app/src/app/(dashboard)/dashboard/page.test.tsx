@@ -26,6 +26,7 @@ describe("DashboardPage", () => {
     vi.mocked(listDocuments).mockResolvedValue(emptyDocs);
     vi.mocked(getEntryStats).mockResolvedValue(emptyStats);
     vi.mocked(getDocumentStats).mockResolvedValue({ days: [] });
+    vi.mocked(listHubDocuments).mockResolvedValue([]);
   });
 
   it("shows zero stats before data loads", () => {
