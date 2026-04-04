@@ -33,10 +33,10 @@ async def get_eval_stats():
     if not _eval_history:
         return EvalStatsResponse(
             total_evaluations=0,
-            avg_faithfulness=0.0,
-            avg_answer_relevancy=0.0,
-            avg_context_precision=0.0,
-            avg_extraction_accuracy=None,
+            faithfulness=0.0,
+            answer_relevancy=0.0,
+            context_precision=0.0,
+            extraction_accuracy=None,
         )
 
     n = len(_eval_history)
@@ -49,10 +49,10 @@ async def get_eval_stats():
 
     return EvalStatsResponse(
         total_evaluations=n,
-        avg_faithfulness=round(avg_faith, 4),
-        avg_answer_relevancy=round(avg_rel, 4),
-        avg_context_precision=round(avg_prec, 4),
-        avg_extraction_accuracy=round(avg_acc, 4) if avg_acc is not None else None,
+        faithfulness=round(avg_faith, 4),
+        answer_relevancy=round(avg_rel, 4),
+        context_precision=round(avg_prec, 4),
+        extraction_accuracy=round(avg_acc, 4) if avg_acc is not None else None,
     )
 
 
