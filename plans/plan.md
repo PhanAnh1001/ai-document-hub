@@ -1,15 +1,17 @@
 # Project Plan: AI Document Hub
-> Last updated: 2026-04-04
+> Last updated: 2026-04-05
 
 ## Trạng thái hiện tại
-- Phase: ALL DONE — Full implementation complete
-- Branch: `claude/complete-implementation-tdd-TLcKo`
+- Phase: ALL DONE — Full implementation + docs complete
+- Branch: `claude/update-readme-ai-project-6E1Nq`
 
 ## TODO
 - [ ] Merge PR vào master sau khi review
 - [ ] Set CI/CD secrets: `GROQ_API_KEY`, `GOOGLE_VISION_API_KEY`, `LIGHTSAIL_HOST`, `LIGHTSAIL_SSH_KEY`
 - [ ] Smoke test với `docker compose up --build` trên máy thật
 - [ ] Add thêm training data cho fine-tuning (>500 samples cho QLoRA)
+- [ ] Auto document type classification (LLM/zero-shot thay vì client tự set `doc_type`)
+- [ ] SSE streaming cho LLM chat responses
 
 ## Notes
 - Concept: AI Document Hub — upload document (hóa đơn, hợp đồng, CV, báo cáo) → OCR → extraction → RAG Q&A
@@ -35,3 +37,5 @@
 - [x] docker-compose: pgvector/pgvector:pg16 + Redis 7 + FastAPI port 8000
 - [x] Phase 3+4: pgvector native vector search + evaluation datasets + batch eval + 17 new tests
 - [x] Phase 5+6: QLoRA notebooks (Colab) + RAGAS eval notebook + sample data + CI/CD + README
+- [x] Rewrite README.md (EN) cho AI engineer interview: CI badges, pipeline diagram, technical highlights, limitations table; fix test count 28→45, fix git clone URL
+- [x] Thêm README_VI.md — bản tiếng Việt đầy đủ
